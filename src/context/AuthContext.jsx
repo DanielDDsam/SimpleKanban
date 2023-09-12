@@ -1,7 +1,6 @@
 import {auth} from "../firebase/firebase.config";
 import {useContext, createContext, useEffect, useState} from "react";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
-import { user } from "@nextui-org/react";
 export const authContext = createContext();
 
 export const useAuth = () => {

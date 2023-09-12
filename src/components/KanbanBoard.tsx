@@ -1,8 +1,6 @@
-import { Column, Id, Task } from "../../types";
+import { Column, Id, Task } from "../types";
 import { createPortal } from "react-dom";
-import PlusIcon from "../icons/PlusIcon";
-import LogOutIcon from "../icons/LogOutIcon";
-
+import LogOutIcon from "../assets/icons/LogOutIcon";
 import { useState, useMemo, useEffect} from "react";
 import ColumnContainer from "./ColumnContainer";
 import { DndContext, DragEndEvent, DragOverEvent, PointerSensor, useSensor,useSensors } from "@dnd-kit/core";
@@ -11,8 +9,8 @@ import { DragStartEvent } from "@dnd-kit/core";
 import { DragOverlay } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import TaskCard from "./TaskCard";
-import {sendTaskToFirestore, getTasksForCurrentUser, updateTaskInFirestore,updateTaskColumnIdInFirestore,deleteTaskFromFirestore} from "../../firebase/kanbanFirebase";
-import { useAuth } from '../../context/authContext';
+import {sendTaskToFirestore, getTasksForCurrentUser, updateTaskInFirestore,updateTaskColumnIdInFirestore,deleteTaskFromFirestore} from "../firebase/kanbanFirebase";
+import { useAuth } from '../context/AuthContext.d.tsx';
 
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 
@@ -35,25 +33,23 @@ const KanbanBoard = () => {
     ]);
     const columnsId = useMemo(()=> columns.map((col) =>col.id),[columns]);
 
-    const [tasks, setTasks] = useState<Task[]>([]);
-    useEffect(() => {
-        // Dentro de un efecto, llama a la función para obtener las tareas.
-        console.log(tasks)
-        }, [tasks]);    
+    const [tasks, setTasks] = useState<Task[]>([]); 
 
     const [activeColumn, setActiveColumn] = useState<Column | null>(null);
+    const [loading, setLoading] = useState(true);
 
     const [activeTask,setActiveTask] = useState<Task | null>(null);
-    useEffect(() => {
-        // Dentro de un efecto, llama a la función para obtener las tareas.
-        const fetchTasks = async () => {
-          const userTasks = await getTasksForCurrentUser(uid);
-          setTasks(userTasks);
-        };
-    
-        // Llama a la función para cargar las tareas cuando el componente se monte.
-        fetchTasks();
-      }, []); 
+     useEffect(() => {
+    const fetchTasks = async () => {
+      if (uid) {
+        const userTasks = await getTasksForCurrentUser(uid);
+        setTasks(userTasks);
+        setLoading(false);
+      }
+    };
+
+    fetchTasks();
+  }, [uid]);
       const fetchTasks = async () => {
         const userTasks = await getTasksForCurrentUser(uid);
         setTasks(userTasks);
@@ -68,13 +64,13 @@ const KanbanBoard = () => {
         }
         }));
 
-    const createNewColumn = () => {
+    /*const createNewColumn = () => {
         const columnToAdd: Column = {
             id: generateId(),
             title: `Columna ${columns.length + 1}`,
         };
         setColumns([...columns, columnToAdd]);
-    };
+    };*/
     const generateId = () => {
         return Math.floor(Math.random() * 10001);
     };
@@ -265,6 +261,7 @@ const KanbanBoard = () => {
                         tasks={tasks.filter((task) => task.columnId === col.id)}
                         deleteTask={deleteTask}
                         updateTask={updateTask}
+                        loading={loading}
                         />
                     ))}
                     </SortableContext>
@@ -304,6 +301,7 @@ const KanbanBoard = () => {
                     deleteTask={deleteTask}
                     updateTask={updateTask}
                     tasks={tasks.filter((task) => task.columnId === activeColumn.id)}
+                    loading={loading}
                     
                     />
                 )}

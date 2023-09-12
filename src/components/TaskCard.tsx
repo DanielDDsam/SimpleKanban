@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Id, Task } from "../../types";
-import Trashicon from "../icons/Trashicon";
+import { Id, Task } from "../types";
+import Trashicon from "../assets/icons/Trashicon";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 interface props {

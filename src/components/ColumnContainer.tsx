@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
-import { Column, Id, Task } from "../../types";
+import { Column, Id, Task } from "../types";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import PlusIcon from "../icons/PlusIcon";
-import { Optionicon } from "../icons/Optionicon";
+import PlusIcon from "../assets/icons/PlusIcon";
+import { Optionicon } from "../assets/icons/Optionicon";
 import TaskCard from "./TaskCard";
+import {CircularProgress} from "@nextui-org/react";
 import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
 interface Props {
     column: Column;
@@ -14,11 +15,12 @@ interface Props {
     createTask: (columnId: Id) => void;
     deleteTask: (id: Id) => void;
     updateTask: (id: Id, content: string) => void;
+    loading: boolean;
     tasks: Task[];
 }
 
 function ColumnContainer(props: Props) {
-    const { column, deleteColumn, updateColumn, createTask, tasks, deleteTask,updateTask} = props;
+    const { column, deleteColumn, updateColumn, createTask, tasks, deleteTask,updateTask, loading} = props;
     const [editMode, setEditMode] = useState(false);
     const [mouseIsOver, setMouseIsOver] = useState(false);
     const numberTask = useMemo(() =>{return tasks.length},[tasks]);
@@ -98,6 +100,8 @@ function ColumnContainer(props: Props) {
     >
         
     <div className="flex gap-2">
+    {loading &&  <CircularProgress aria-label="Loading..."  color="default" size="sm" />}
+    {!loading &&
         <div 
         
         className="
@@ -110,7 +114,8 @@ function ColumnContainer(props: Props) {
         text-sm
         rounded-full
         ">
-            {numberTask}</div>    
+           
+             {numberTask}</div>  }  
         
         {!editMode && column.title}
         {editMode && <input

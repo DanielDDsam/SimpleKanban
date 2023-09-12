@@ -12,3 +12,10 @@ export type Task = {
     content: string;
     uid: string;
 };
+
+export type FirestoreTask = {
+    id: Id;
+    columnId: Id;
+    content: string;
+    uid: string;
+  };

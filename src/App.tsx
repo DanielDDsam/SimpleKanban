@@ -1,11 +1,12 @@
 import './App.css'
 import React from 'react'
-import KanbanBoard from './assets/components/KanbanBoard'
-import FormFirebase from './assets/components/FormFirebase'
-import { AuthProvider } from './context/AuthContext'
+import KanbanBoard from './components/KanbanBoard'
+import FormFirebase from './components/FormFirebase'
+import { AuthProvider } from './context/AuthContext.d.tsx'
 
 function App() {
   const [showKanban, setShowKanban] = React.useState(false)
+ 
   return(
     <AuthProvider>
       {showKanban && <KanbanBoard />}
